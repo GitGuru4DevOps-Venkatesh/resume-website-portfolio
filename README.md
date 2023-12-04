@@ -79,9 +79,9 @@ Once the stack is running, you can access the website at `http://localhost:80`.
 
 Which method you choose to deploy your application will depend on your specific needs. If you are only deploying a single container, then you can use the `docker run` command. If you are deploying multiple containers, or if you want to use a more advanced deployment configuration, then you can use Docker Compose.
 
-------------------------------------------------------------------------------End--------------------------------------------------------
+------------------------------------------------------------------------------End of the above project steps--------------------------------------------------------
 
-Great! Working on a GitHub repository for a resume website portfolio involves a few steps. Let's go through the process assuming you want to set up and deploy this project on a server using Docker and Kubernetes. Keep in mind that the provided steps are generic, and you may need to adapt them based on the specific requirements and structure of the repository.
+Let's go through the process assuming you want to set up and deploy this project on a server using Docker and Kubernetes. Keep in mind that the provided steps are generic, and you may need to adapt them based on the specific requirements and structure of the repository.
 
 ### Prerequisites:
 
