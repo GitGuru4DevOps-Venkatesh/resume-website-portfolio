@@ -1,0 +1,21 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resume-website
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resume-website
+  template:
+    metadata:
+      labels:
+        app: resume-website
+    spec:
+      containers:
+        - name: resume-website
+          image: venkateshdocker1/resume-website:latest
+          ports:
+            - containerPort: 8080
+
