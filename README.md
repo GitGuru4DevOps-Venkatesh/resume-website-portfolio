@@ -256,5 +256,133 @@ Certainly, let's break it down into clear steps for setting up Docker and Kubern
 
     - Configure any environment-specific settings (e.g., database connection strings) either through ConfigMaps or environment variables.
     - Implement persistent storage if needed.
+  If any issue:
+Great! If your website is already running in Docker on your AWS EC2 instance, the next steps involve setting up Kubernetes to manage and orchestrate your containers. Here's a summary of the steps you need to follow:
+
+### Prerequisites:
+- Docker is installed and your website is running in a Docker container.
+- AWS EC2 instance is running and accessible.
+- SSH access to your EC2 instance.
+
+### Steps:
+
+1. **Install Kubernetes:**
+    ```bash
+    sudo apt-get update && sudo apt-get install -y apt-transport-https curl
+    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+    echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+    sudo apt-get update
+    sudo apt-get install -y kubeadm kubelet kubectl
+    ```
+
+2. **Initialize Kubernetes Cluster:**
+    ```bash
+    sudo kubeadm init --pod-network-cidr=192.168.0.0/16
+    ```
+
+    Follow the instructions provided by the `kubeadm init` command.
+
+3. **Set Up `kubectl` for Your User:**
+    ```bash
+    mkdir -p $HOME/.kube
+    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    sudo chown $(id -u):$(id -g) $HOME/.kube/config
+    ```
+
+4. **Install Pod Network (Calico):**
+    ```bash
+    kubectl apply -f https://docs.projectcalico.org/v3.18/manifests/calico.yaml
+    ```
+
+5. **Deploy Your Application:**
+    - Clone your GitHub repository:
+        ```bash
+        git clone https://github.com/GitGuru4DevOps-Venkatesh/resume-website-portfolio.git
+        cd resume-website-portfolio
+        ```
+
+    - Create Kubernetes manifests (YAML files) for your application. An example is provided in your previous message.
+
+    - Apply the Kubernetes manifests:
+        ```bash
+        kubectl apply -f deployment.yaml
+        kubectl apply -f service.yaml
+        ```
+
+    - Check the status and wait for the external IP to be assigned:
+        ```bash
+        kubectl get svc -o wide
+        ```
+
+6. **Access Your Application:**
+    Once an external IP is assigned to your service, access your application using that IP.
+
+### Troubleshooting Tips:
+- If there are issues with the Kubernetes components, check the logs:
+    ```bash
+    journalctl -xeu kubelet
+    ```
+
+- If the external IP is not getting assigned, check for any events:
+    ```bash
+    kubectl get events
+    ```
+
+Make sure to replace placeholder values in the example YAML files (like `your-docker-username`, `latest`, etc.) with your actual values.
+
+If you encounter any issues or have specific error messages, feel free to share them, and I'll assist you further.
+
+It looks like your Kubernetes cluster is up and running, and the `kubectl get svc` command shows the `kubernetes` service, which is the default service created by Kubernetes. However, it seems that you are missing the service for your application (`resume-website`).
+
+Let's troubleshoot the issue and make sure your service is correctly deployed:
+
+1. **Check Deployments:**
+   Verify that your deployment is running:
+
+   ```bash
+   kubectl get deployments
+   ```
+
+   Ensure that you see your `resume-website` deployment and that the desired and current replicas are both 1.
+
+2. **Check Pods:**
+   Verify that your pods are running:
+
+   ```bash
+   kubectl get pods
+   ```
+
+   Ensure that you see your `resume-website` pod and that it's in the "Running" state.
+
+3. **Check Services:**
+   Verify that your service is created:
+
+   ```bash
+   kubectl get services
+   ```
+
+   Ensure that you see your `resume-website` service and that it has an external IP.
+
+4. **Check Service Details:**
+   Get more details about your service, including the external IP:
+
+   ```bash
+   kubectl get svc resume-website -o wide
+   ```
+
+   Verify that the service has been assigned an external IP. If not, it might still be pending. Wait a few minutes and check again.
+
+5. **Check Events:**
+   Check for any events related to your service or deployment:
+
+   ```bash
+   kubectl get events
+   ```
+
+   Look for any error messages or events that might indicate issues.
+
+If the external IP is still not assigned to your service, it's possible that there are issues with the networking configuration or the cloud provider's load balancer setup. Verify that your AWS instance's security group allows traffic on the required ports.
+
+If you encounter any specific error messages or issues during these steps, please share them, and I'll do my best to assist you further.
 
 Remember, these are general steps, and your project structure might require additional configurations or modifications. Review the documentation and source code of the project for any specific setup instructions or dependencies. If you encounter any issues or have specific questions about the project, feel free to ask!
